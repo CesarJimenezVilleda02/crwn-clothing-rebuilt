@@ -1,9 +1,12 @@
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component.jsx';
+import Header from './components/header/header.component.jsx';
+import SignInAndSignOut from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx';
 
-//componente con el que envolveremos la app para darle la funcionalidad
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+//componente con el que envolveremos la app para darle la funcionalidad, el nrowserrouter ya no es necesario porque envolvimos
+//todo
+import { Route, Router, Switch } from 'react-router-dom';
 
 function App() {
     return (
@@ -17,15 +20,17 @@ function App() {
                 <Route exact path='/' component={HomePage} />
                 <Route path='/hats' component={HatsPage} />
             </Router> */}
-            <Router>
-                <Switch>
-                    {/* switch solo rendereara la que haga match, si encuentra que el / jala, ya no checa lo demás y solo renderea eso
+
+            {/* el header va afuera del switch porque siempre queremos que esté presente */}
+            <Header />
+            <Switch>
+                {/* switch solo rendereara la que haga match, si encuentra que el / jala, ya no checa lo demás y solo renderea eso
                 solo poniendo el exact en el path del homepage podemos prevenir que ya no cheque lo demás*/}
-                    <Route exact path='/' component={HomePage} />
-                    {/* el history solo pasa 1 hijo*/}
-                    <Route path='/shop' component={ShopPage} />
-                </Switch>
-            </Router>
+                <Route exact path='/' component={HomePage} />
+                {/* el history solo pasa 1 hijo*/}
+                <Route exact path='/shop' component={ShopPage} />
+                <Route exact path='/signin' component={SignInAndSignOut} />
+            </Switch>
         </div>
     );
 }

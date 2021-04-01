@@ -1,0 +1,35 @@
+.header {
+    height: 70px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+
+    .logo-container {
+        height: 100%;
+        width: 70px;
+        padding: 25px;
+    }
+
+    .options {
+        width: 50%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .option {
+            padding: 10px 15px;
+        }
+
+        // como se crea un a al final del dia para el texto seleccionamos el a, esto se puede hacer de forma global en el app.css
+        & a {
+            text-decoration: none;
+            color: black;
+
+            &:active {
+                color: grey;
+            }
+        }
+    }
+}
