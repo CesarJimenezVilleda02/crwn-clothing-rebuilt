@@ -4,63 +4,49 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component.jsx';
 import Header from './components/header/header.component.jsx';
 import SignInAndSignOut from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx';
-
-//para poder sabes que ya hay usuarios vamos a usar el objeto auth
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
-
 import { Route, Switch } from 'react-router-dom';
 
+//conectar con redux y el store
+import { connect } from 'react-redux';
+//importamos la accion que nos va a ayudar a cambiar el state
+import { setCurrentUser } from './redux/user/user.actions';
+
 class App extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            currentUser: 'null',
-        };
-    }
+    // constructor() {
+    //     super();
+    //     this.state = {
+    //         currentUser: 'null',
+    //     };
+    // }
+    //ya no necesitamos este state
 
     unsubscribeFromAuth = null;
-
-    //queremos que se actualice el state cada que el usuario cambia de alguna forma
-    //recordeos que el component did mount es una funcion que se llama solo cuando se renderea el componente
     componentDidMount() {
-        //el parametro es el estado del user en firebase
-        //es como un event listener, nos deja tener una persistencia de sesion del usuario
+        const { setCurrentUser } = this.props;
+
         this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-            //le ponemos e async por firebase
-            //es un sistema de mensajeria abierto entre nustro proyecto y firebase, siempre que se monte
-            //va a estar abierto por lo que hay que cerrarlo
-
-            // createUserProfileDocument(user);
-
-            // this.setState({ currentUser: user });
-            // // console.log(this.state.currentUser);
-
-            //segunda version, user pasa a ser userAuth, son lo mismo
             if (userAuth) {
                 const userRef = await createUserProfileDocument(userAuth);
-
-                ///lo que haces es poner un listener a los cambios en el snapshot
                 userRef.onSnapshot((snapShot) => {
                     // console.log(snapShot.data()); //asi obtenemos un objeto con los datos de usuario
-                    this.setState(
-                        {
-                            currentUser: {
-                                // recordemos eu el id llega con el paquete original
-                                id: snapShot.id,
-                                //spredeamos en el objeto el resto de propiedades accesibles con data()
-                                ...snapShot.data(),
-                            },
-                        },
-
-                        //recordemos que no podemos llamar el console.log después del setstate porque este asincronico
-                        //por lo que lo pasamos como segundo argumento al metodo setstate
-                        () => console.log(this.state)
-                    );
+                    // this.setState(
+                    //     {
+                    //         currentUser: {
+                    //             id: snapShot.id,
+                    //             ...snapShot.data(),
+                    //         },
+                    //     }
+                    // ); //ya no necesitamos esto, lo reemplazamos con la accion que tenemos
+                    setCurrentUser({
+                        id: snapShot.id,
+                        ...snapShot.data(),
+                    });
+                    //asi ya le estamos metiendo el usuario que recibimos del snapshot a la creadora de acciones
                 });
                 //si esta vacio y ya hicimso el sign out
-            } else {
-                this.setState({ currentUser: null });
             }
+            setCurrentUser(userAuth);
         });
     }
 
@@ -73,7 +59,8 @@ class App extends React.Component {
     render() {
         return (
             <div className='App'>
-                <Header currentUser={this.state.currentUser} />
+                {/* <Header currentUser={this.state.currentUser} /> se lo quito porque ya está conectado al store */}
+                <Header />
                 <Switch>
                     <Route exact path='/' component={HomePage} />
                     <Route exact path='/shop' component={ShopPage} />
@@ -84,4 +71,15 @@ class App extends React.Component {
     }
 }
 
-export default App;
+//dispatch es la forma de saber que lo que le pases va a ir a los reducers
+const mapDispatchToProps = (dispatch) => ({
+    setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+    //le pasamos la funcion que hace la accion con el usuario que irá de payload para que el objeto formado llegue a
+    //los reducers
+});
+
+//ya no necesitamos el state del usuario en app
+export default connect(null, mapDispatchToProps)(App);
+
+//ya no es necesario modificar el header para que en el sign out también se cambie el estado, porque lo que hace es
+//modificar el objeto auth y nosotros escuchamos los cambios en el objeto auth en app, no en header

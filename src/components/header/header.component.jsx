@@ -1,19 +1,17 @@
 import React from 'react';
-//hacemos que el browser router llegue pero con el nombre que nosotros queramos, no obstante, ya no es necesario
-//porque envuelves toda la aplicación con él
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import './header.styles.scss';
-
 import { auth } from '../../firebase/firebase.utils';
-
-//para importar svgs a react o que haces es decirle a react que va a tener un componente que va a renderear un svg
 import { ReactComponent as Logo } from '../../assets/crown.svg';
+
+//1.- importamos connect: es un componente de alto orden en el que envolvemos las cosas para tener acceso a redux
+import { connect } from 'react-redux';
 
 const Header = ({ currentUser }) => (
     <div className='header'>
         <Link className='logo-container' to='/'>
             <Logo className='logo' />
-            <h3>{'Welcome ' + currentUser.displayName}</h3>
+            {currentUser ? <h3>{'Welcome ' + currentUser.displayName}</h3> : <div></div>}
         </Link>
         <div className='options'>
             <Link className='option' to='/shop'>
@@ -23,8 +21,6 @@ const Header = ({ currentUser }) => (
                 CONTACT
             </Link>
             {currentUser ? (
-                //este es un metodo que ya viene por defecto en el auth, el otro era para cerrar la comunicacion y este
-                //para setear al state a null
                 <div className='option' onClick={() => auth.signOut()}>
                     SIGN OUT
                 </div>
@@ -37,4 +33,15 @@ const Header = ({ currentUser }) => (
     </div>
 );
 
-export default Header;
+//este va a ser para meterle el state al componente
+const mapStateToProps = (
+    state //puede llamarse como sea pero este es el standard
+) =>
+    //el state que llega es el del root
+    ({ currentUser: state.user.currentUser });
+//esto se refiere al objeto que va arecibir como prop, es decir, va a llegar una prop de current user
+//que va a contener el current user dado por el userreducer en el estado grandote que resulta de la combina
+//cion de los reducers
+
+//a connect le vamos a pasar dos funciones y nos va a dar un nuevo componente conectado al que le pasaremos el original
+export default connect(mapStateToProps)(Header);
