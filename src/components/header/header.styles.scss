@@ -3,12 +3,26 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 25px;
 
     .logo-container {
         height: 100%;
-        width: 70px;
-        padding: 25px;
+        // width: 70px;
+        // padding: 25px;
+        align-self: flex-start;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .logo {
+            width: 70px;
+        }
+
+        h3 {
+            text-transform: uppercase;
+            margin-left: 30px;
+        }
     }
 
     .options {
@@ -17,6 +31,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        cursor: pointer;
 
         .option {
             padding: 10px 15px;

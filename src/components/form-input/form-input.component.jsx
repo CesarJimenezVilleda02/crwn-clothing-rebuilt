@@ -4,7 +4,7 @@ import './form-input.styles.scss';
 
 //el handle change es para que se vaya para arriba
 const FormInput = ({ handleChange, label, ...otherProps }) => {
-    console.log(otherProps.value.length);
+    // console.log(otherProps.value.length);
     return (
         <div className='group'>
             {/* las other props van a ser el nombre el tipo y si es requerido por ejemplo */}
