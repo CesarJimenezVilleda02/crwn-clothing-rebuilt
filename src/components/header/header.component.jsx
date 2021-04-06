@@ -3,11 +3,18 @@ import { BrowserRouter as Router, Link } from 'react-router-dom';
 import './header.styles.scss';
 import { auth } from '../../firebase/firebase.utils';
 import { ReactComponent as Logo } from '../../assets/crown.svg';
+//para crear el structured selectot
+import { createStructuredSelector } from 'reselect';
+import { selectCartHidden } from '../../redux/cart/cart.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+
+import CartIcon from '../cart-icon/cart-icon.component';
+import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
 //1.- importamos connect: es un componente de alto orden en el que envolvemos las cosas para tener acceso a redux
 import { connect } from 'react-redux';
 
-const Header = ({ currentUser }) => (
+const Header = ({ currentUser, hidden }) => (
     <div className='header'>
         <Link className='logo-container' to='/'>
             <Logo className='logo' />
@@ -29,19 +36,30 @@ const Header = ({ currentUser }) => (
                     SIGN IN
                 </Link>
             )}
+            <CartIcon />
         </div>
+        {/* ahora necesitamos crear algo que nos permita ocultarlo */}
+        {hidden ? null : ( //con null ya no te sale nada porque si pones un div vacio por el space between todo se va alv
+            <CartDropdown />
+        )}
     </div>
 );
 
-//este va a ser para meterle el state al componente
-const mapStateToProps = (
-    state //puede llamarse como sea pero este es el standard
-) =>
-    //el state que llega es el del root
-    ({ currentUser: state.user.currentUser });
-//esto se refiere al objeto que va arecibir como prop, es decir, va a llegar una prop de current user
-//que va a contener el current user dado por el userreducer en el estado grandote que resulta de la combina
-//cion de los reducers
+//SIN RESELECT
+// //este va a ser para meterle el state al componente
+// const mapStateToProps = (
+//     //destructurar nesteds, solo los rojos salen coo variables
+//     { user: { currentUser }, cart: { hidden } } //puede llamarse como sea pero este es el standard
+// ) => ({ currentUser, hidden });
 
-//a connect le vamos a pasar dos funciones y nos va a dar un nuevo componente conectado al que le pasaremos el original
+//CON RESELECT
+// const mapStateToProps = (state) => ({ currentUser: selectCurrentUser(state), hidden: selectCartHidden(state) });
+
+//con create structured selector
+const mapStateToProps = createStructuredSelector({
+    //les pasa el estado actual de forma automatica
+    currentUser: selectCurrentUser,
+    hidden: selectCartHidden,
+});
+
 export default connect(mapStateToProps)(Header);

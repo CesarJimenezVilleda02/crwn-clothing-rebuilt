@@ -12,7 +12,7 @@ const CollectionPreview = ({ title, items }) => (
                 //solo nos aparezcan los primeros 4 items
                 .filter((item, i) => i < 4)
                 .map(({ id, ...other }) => (
-                    <CollectionItem key={id} {...other} />
+                    <CollectionItem key={id} {...other} id={id} />
                 ))}
         </div>
     </div>
