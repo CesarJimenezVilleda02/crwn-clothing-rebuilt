@@ -7,6 +7,8 @@ import storage from 'redux-persist/lib/storage'; //con esto sacamos el local sto
 
 import userReducer from './user/user.reducer';
 import cartReducer from './cart/cart.reducer';
+import directoryReducer from './directory/directory.reducer';
+import shopReducer from './shop/shop.reducer';
 
 //esto solo será el json con la configuracion de lo que vamos a querer hacer con el persist
 const persistConfig = {
@@ -29,6 +31,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
     user: userReducer,
     cart: cartReducer,
+    directory: directoryReducer,
+    shop: shopReducer,
 });
 
 //esto va a dar el root modificado con la configuracion, es el root pero con el local storage linkeado

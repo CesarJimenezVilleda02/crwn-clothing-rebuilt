@@ -1,63 +1,37 @@
 import React from 'react';
 import './directory.styles.scss';
 import MenuItem from '../menu-item/menu-item.component';
+import { connect } from 'react-redux';
+//metemos el selector para namas jalar una parte
+import { selectDirectorySections } from '../../redux/directory/directory.selectors';
+//el que no se va a dejar combinar
+import { cerateStructuredSelector, createStructuredSelector } from 'reselect';
 
-class Directory extends React.Component {
-    constructor() {
-        super();
-
-        this.state = {
-            sections: [
-                {
-                    title: 'hats',
-                    imageUrl: 'https://i.ibb.co/cvpntL1/hats.png',
-                    id: 1,
-                },
-                {
-                    title: 'jackets',
-                    imageUrl: 'https://i.ibb.co/px2tCc3/jackets.png',
-                    id: 2,
-                },
-                {
-                    title: 'sneakers',
-                    imageUrl: 'https://i.ibb.co/0jqHpnp/sneakers.png',
-                    id: 3,
-                },
-                {
-                    title: 'womens',
-                    imageUrl: 'https://i.ibb.co/GCCdy8t/womens.png',
-                    size: 'large',
-                    id: 4,
-                },
-                {
-                    title: 'mens',
-                    imageUrl: 'https://i.ibb.co/R70vBrQ/men.png',
-                    size: 'large',
-                    id: 5,
-                },
-            ],
-        };
-    }
-    render() {
-        return (
-            // <div className='directory-menu'>
-            //     {this.state.sections.map((section) => {
-            //         <MenuItem id={section.id} imageUrl={section.imageUrl} title={section.imageUrl} />;
-            //     })}
-            // </div>
-            //recordemos que se pueden desestructurar los objetos que llegan y se reducen a las variables con los nombres de
-            //sus propiedades
-            <div className='directory-menu'>
-                {this.state.sections.map(({ id, ...otherProps }) => (
-                    //esto sería el equivalente a pasar todo como en el anterior, pasan con su mismo nombre
-                    <MenuItem key={id} {...otherProps} />
-                ))}
-                {/* {this.state.sections.map(({ title, imageUrl, id, size }) => (
+const Directory = ({ sections }) => (
+    // <div className='directory-menu'>
+    //     {this.state.sections.map((section) => {
+    //         <MenuItem id={section.id} imageUrl={section.imageUrl} title={section.imageUrl} />;
+    //     })}
+    // </div>
+    //recordemos que se pueden desestructurar los objetos que llegan y se reducen a las variables con los nombres de
+    //sus propiedades
+    <div className='directory-menu'>
+        {sections.map(({ id, ...otherProps }) => (
+            //esto sería el equivalente a pasar todo como en el anterior, pasan con su mismo nombre
+            <MenuItem key={id} {...otherProps} />
+        ))}
+        {/* {this.state.sections.map(({ title, imageUrl, id, size }) => (
                     <MenuItem key={id} title={title} imageUrl={imageUrl} size={size} />
                 ))} */}
-            </div>
-        );
-    }
-}
+    </div>
+);
 
-export default Directory;
+//lega el estado por el connect
+// const mapStateToProps = (state) => ({
+//     sections: state.directory,
+// });
+const mapStateToProps = createStructuredSelector({
+    sections: selectDirectorySections,
+});
+
+export default connect(mapStateToProps)(Directory);
