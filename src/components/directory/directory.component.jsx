@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 //metemos el selector para namas jalar una parte
 import { selectDirectorySections } from '../../redux/directory/directory.selectors';
 //el que no se va a dejar combinar
-import { cerateStructuredSelector, createStructuredSelector } from 'reselect';
+import { createStructuredSelector } from 'reselect';
 
 const Directory = ({ sections }) => (
     // <div className='directory-menu'>
