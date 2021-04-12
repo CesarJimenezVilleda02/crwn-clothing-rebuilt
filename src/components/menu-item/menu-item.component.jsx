@@ -5,13 +5,13 @@ import { withRouter } from 'react-router-dom';
 import './menu-item.styles.scss';
 
 // con el destructuring lo sacamos del objeto props que llega con las propiedades spredeadas
-const MenuItem = ({ title, imageUrl, size, history, match }) => {
+const MenuItem = ({ title, imageUrl, size, history, match, id }) => {
     // console.log(match.url);
     return (
         //no sabemos en donde estaremos en nuestro directorio, por lo que usaremos la url del match
         //recordemos que esta url se define por el match qu ehace en primera instancia el routing con
         //las urls de cada componente
-        <div className={`menu-item ${size}`} onClick={() => history.push(`${match.url}${title}`)}>
+        <div className={`menu-item ${size}`} onClick={() => history.push(`${match.url}${id}`)}>
             <div
                 className='background-image'
                 style={{

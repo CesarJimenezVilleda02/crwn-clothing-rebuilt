@@ -8,13 +8,20 @@ import './collection.styles.scss';
 
 //ahora tenemoe el match que nos llega de la shop
 const CollectionPage = ({ match, collection }) => {
+    const { items, title } = collection;
+
     // console.log(match.params.collectionId);
     //---> llega el url hasta aqui y un atributo params que guarda un objeto con la probiedad categoryId
     //vamos a usar este parametro para
     // console.log(collection);
     return (
-        <div className='category'>
-            <h2>{collection.title}</h2>
+        <div className='collection-page'>
+            <h2 className='title'>{title}</h2>
+            <div className='items'>
+                {items.map((item) => (
+                    <CollectionItem key={item.id} {...item} />
+                ))}
+            </div>
         </div>
     );
 };

@@ -16,10 +16,11 @@ const Directory = ({ sections }) => (
     //recordemos que se pueden desestructurar los objetos que llegan y se reducen a las variables con los nombres de
     //sus propiedades
     <div className='directory-menu'>
-        {sections.map(({ id, ...otherProps }) => (
+        {sections.map(({ id, ...otherProps }) => {
+            console.log(id);
             //esto sería el equivalente a pasar todo como en el anterior, pasan con su mismo nombre
-            <MenuItem key={id} {...otherProps} />
-        ))}
+            return <MenuItem key={id} id={id} {...otherProps} />;
+        })}
         {/* {this.state.sections.map(({ title, imageUrl, id, size }) => (
                     <MenuItem key={id} title={title} imageUrl={imageUrl} size={size} />
                 ))} */}
