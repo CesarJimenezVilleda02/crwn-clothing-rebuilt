@@ -69,7 +69,8 @@ class App extends React.Component {
                 <Header />
                 <Switch>
                     <Route exact path='/' component={HomePage} />
-                    <Route exact path='/shop' component={ShopPage} />
+                    {/* se lo quitamos porque el shop va a estar variando, cuando varian debemos removerlo */}
+                    <Route path='/shop' component={ShopPage} />
                     {/* con esta determinas qué componente renderear */}
                     <Route
                         exact
