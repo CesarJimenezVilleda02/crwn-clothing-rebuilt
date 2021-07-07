@@ -5,7 +5,9 @@ import ShopPage from './pages/shop/shop.component.jsx';
 import Header from './components/header/header.component.jsx';
 import SignInAndSignOut from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx';
 import CheckoutPage from './pages/checkout/checkout.component.jsx';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+
+// la función que creamos
+import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
 //selectors
 import { selectCurrentUser } from './redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
@@ -18,6 +20,10 @@ import { connect } from 'react-redux';
 //importamos la accion que nos va a ayudar a cambiar el state
 import { setCurrentUser } from './redux/user/user.actions';
 
+// con este los vamos a mandar al firebase
+import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
+import { getByTitle } from '@testing-library/react';
+
 class App extends React.Component {
     // constructor() {
     //     super();
@@ -29,7 +35,7 @@ class App extends React.Component {
 
     unsubscribeFromAuth = null;
     componentDidMount() {
-        const { setCurrentUser } = this.props;
+        const { setCurrentUser, collections } = this.props;
 
         this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
             if (userAuth) {
@@ -53,6 +59,14 @@ class App extends React.Component {
                 //si esta vacio y ya hicimso el sign out
             }
             setCurrentUser(userAuth);
+
+            //FIREBASE PARTE 2 -- LO QUITAMOS LUEGO DE LLAMARLO PORQUE SOLO SE OCUPA UNA VEZ
+            // no queremos que pasen cosas como el id meado que hicimos o el routename
+            // addCollectionAndDocuments(
+            //     'collections',
+            //     collections.map(({ title, items }) => ({ title, items }))
+            // );
+            // console.log('puto');
         });
     }
 
@@ -97,6 +111,7 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
     currentUser: selectCurrentUser,
+    collections: selectCollectionsForPreview,
 });
 
 //dispatch es la forma de saber que lo que le pases va a ir a los reducers

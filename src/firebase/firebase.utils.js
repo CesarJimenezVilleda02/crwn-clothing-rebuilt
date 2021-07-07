@@ -73,6 +73,46 @@ export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 export default firebase;
 
-export const addCollectionAndDocuments = (collectionKey, objectsToAdd) => {
+////////firebase parte 2
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+    // creamos documento con la key
     const collectionRef = firestore.collection(collectionKey);
+
+    // solo podemos hacer un set a la vez
+    //si se va el internet solo uno serviría por lo que tenemos que agrupar todas
+    //las llamadas para que no se queden a medias, para juntarlas usamos batch
+    const batch = firestore.batch();
+    objectsToAdd.forEach((obj) => {
+        // lo que va a hacer firebase al llamarlo vacío es crear un id aleatorio
+        // tambien podemos pasar un argumento para que esa sea la llave
+        const newDocRef = collectionRef.doc();
+
+        // esto los va juntando
+        batch.set(newDocRef, obj);
+    });
+
+    // esto regresa una promesa
+    return await batch.commit();
+};
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+    // vamos a crear la forma de transoformar las collecciones con las propiedades buenas
+    // la colleccion regresa en la propiedad docs los documentos
+    const transformedCollection = collections.docs.map((doc) => {
+        const { title, items } = doc.data();
+
+        return {
+            // le pasas una string que transofrma los caracteres que no soporta una url
+            routeName: encodeURI(title.toLowerCase()),
+            items,
+            id: doc.id,
+            title,
+        };
+    });
+
+    // creamos un objeto donde el titulo es la key de la coleccion
+    return transformedCollection.reduce((accumulator, collection) => {
+        accumulator[collection.title.toLowerCase()] = collection;
+        return accumulator;
+    }, {});
 };

@@ -17,7 +17,7 @@ export const selectCollections = createSelector([selectShop], (shop) => shop.col
 //en el overview estamos usando un array, hay que regresarlo como un arreglo en evz de un objeto
 export const selectCollectionsForPreview = createSelector([selectCollections], (collections) =>
     //recordemos que el keys nos regresa siempre un arreglo con cadenas de caracteres de los nombres de las propiedades
-    Object.keys(collections).map((key) => collections[key])
+    collections ? Object.keys(collections).map((key) => collections[key]) : []
 );
 
 //hay que encontrar el id que hace match con el collectionidmap
@@ -29,6 +29,9 @@ export const selectCollection = (collectionUrlParam) =>
             // collections.find((collection) => collection.id === COLLECTION_ID_MAP[collectionUrlParam])
             //con el data normalization ya lo pasamos a un objeto, data nprmalization es guardar las cosas
             //en objetos en vez de arreglos
-            collections[collectionUrlParam]
+            collections ? collections[collectionUrlParam] : null
+        // como no hay en un inicio se tripea cuando vamos a una página en específico, por eso al montarse
+        // da error, como al inicio no ha llegado puede que esté en un estado en el que no hay datos, por eso
+        // en el tiempo de carga haremos un spinner
     );
 //aqui pasa el currying que es una funcion que regresa otra funcion
