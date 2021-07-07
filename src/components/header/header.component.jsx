@@ -14,35 +14,38 @@ import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 //1.- importamos connect: es un componente de alto orden en el que envolvemos las cosas para tener acceso a redux
 import { connect } from 'react-redux';
 
+// styled components css in js
+import { HeaderContainer, LogoContainer, OptionsContainer, OptionDiv, OptionLink } from './header.styles.jsx';
+
 const Header = ({ currentUser, hidden }) => (
-    <div className='header'>
-        <Link className='logo-container' to='/'>
+    <HeaderContainer >
+        <LogoContainer  to='/'>
             <Logo className='logo' />
             {currentUser ? <h3>{'Welcome ' + currentUser.displayName}</h3> : <div></div>}
-        </Link>
-        <div className='options'>
-            <Link className='option' to='/shop'>
+        </LogoContainer>
+        <OptionsContainer >
+            <OptionLink  to='/shop'>
                 SHOP
-            </Link>
-            <Link className='option' to='/contact'>
+            </OptionLink>
+            <OptionLink  to='/contact'>
                 CONTACT
-            </Link>
+            </OptionLink>
             {currentUser ? (
-                <div className='option' onClick={() => auth.signOut()}>
+                <OptionDiv  onClick={() => auth.signOut()}>
                     SIGN OUT
-                </div>
+                </OptionDiv>
             ) : (
-                <Link className='option' to='/signin'>
+                <OptionLink to='/signin'>
                     SIGN IN
-                </Link>
+                </OptionLink>
             )}
             <CartIcon />
-        </div>
+        </OptionsContainer>
         {/* ahora necesitamos crear algo que nos permita ocultarlo */}
         {hidden ? null : ( //con null ya no te sale nada porque si pones un div vacio por el space between todo se va alv
             <CartDropdown />
         )}
-    </div>
+    </HeaderContainer>
 );
 
 //SIN RESELECT
