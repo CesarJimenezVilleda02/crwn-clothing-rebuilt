@@ -10,33 +10,25 @@ import WithSpinner from '../../components/with-spinner/with-spinner.component';
 
 import { firestore, convertCollectionsSnapshotToMap } from '../../firebase/firebase.utils';
 
+// vamos a usar la función que hicimos
+import { fetchCollectionStartAsync } from '../../redux/shop/shop.actions';
+import { selectIsCollectionfetching, selectIsCollectionsLoaded } from '../../redux/shop/shop.selectors';
+import { createStructuredSelector } from 'reselect';
+
+// no hay necesidad de pasarles el state de las colecciones porque ya lo sacan ellas mismas
 const CollectionOverviewWithSpinner = WithSpinner(CollectionOverview);
 const CollectionpageWithSpinner = WithSpinner(CollectionPage);
 
 class ShopPage extends React.Component {
-    // react ya lo hace en el fonde desde una versión nueva.
-    state = {
-        isLoading: true,
-    };
-
     unsubscribeFromSnapshot = null;
 
     componentDidMount() {
-        const { updateCollections } = this.props;
-        const collectionRef = firestore.collection('collections');
-
-        // cada que cambie y la primera vez nos va a mandar el snapshot
-        collectionRef.onSnapshot(async (snapshot) => {
-            // console.log(snapshot);
-
-            updateCollections(convertCollectionsSnapshotToMap(snapshot));
-            this.setState({ isLoading: false });
-        });
+        const { fetchCollectionStartAsync } = this.props;
+        fetchCollectionStartAsync();
     }
 
     render() {
-        const { match } = this.props;
-        const { isLoading } = this.state;
+        const { match, isFetching, isLoaded } = this.props;
         return (
             <div className='shop-page'>
                 {/* recordemos qu eun raoute siempre pasa location, history y match, como shop esta dentro de un router tambien 
@@ -48,22 +40,27 @@ class ShopPage extends React.Component {
                     exact
                     path={`${match.path}`}
                     // el render lleva una funcion que recibe los aparametros y se los mete al componente
-                    render={(props) => <CollectionOverviewWithSpinner isLoading={isLoading} {...props} />}
+                    render={(props) => <CollectionOverviewWithSpinner isLoading={!isLoaded} {...props} />}
                 />
                 {/* esto nos deja acceder al category id en el objeto match dentro de la category page, con los 
             dos puntos le decimos que vamos a querer aparamtros y lo que va luego de los dos puntos es lo que 
             queremos usar para nombrer el parametro */}
                 <Route
                     path={`${match.path}/:collectionId`}
-                    render={(props) => <CollectionpageWithSpinner isLoading={isLoading} {...props} />}
+                    render={(props) => <CollectionpageWithSpinner isLoading={!isLoaded} {...props} />}
                 />
             </div>
         );
     }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    updateCollections: (collectionsMap) => dispatch(updateCollections(collectionsMap)),
+const mapStateToProps = createStructuredSelector({
+    isFetching: selectIsCollectionfetching,
+    isLoaded: selectIsCollectionsLoaded,
 });
 
-export default connect(null, mapDispatchToProps)(ShopPage);
+const mapDispatchToProps = (dispatch) => ({
+    fetchCollectionStartAsync: () => dispatch(fetchCollectionStartAsync()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShopPage);

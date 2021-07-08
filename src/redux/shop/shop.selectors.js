@@ -35,3 +35,8 @@ export const selectCollection = (collectionUrlParam) =>
         // en el tiempo de carga haremos un spinner
     );
 //aqui pasa el currying que es una funcion que regresa otra funcion
+
+export const selectIsCollectionfetching = createSelector([selectShop], (shop) => shop.isFetching);
+
+// !! en cualquier falsy nos regresa el falsy de verdad
+export const selectIsCollectionsLoaded = createSelector([selectShop], (shop) => !!shop.collections);

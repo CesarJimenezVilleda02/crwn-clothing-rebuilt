@@ -3,12 +3,15 @@ import { createStore, applyMiddleware } from 'redux';
 import { persistStore } from 'redux-persist'; //importamos la funcion que permite guardar sesion
 //asi podemos cachear el state
 
+// para usar thunk lo importamos y lo metemos en el arrego de middlewares
+import thunk from 'redux-thunk';
+
 import logger from 'redux-logger';
 
 import rootReducer from './root-reducer';
 
 // espera un arreglo con todos los middlewares que podamos ocupar
-const middlewares = [logger];
+const middlewares = [logger, thunk];
 
 //para crear la store se necesita un root reducer y una funcion con los middlewares
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
