@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // adecuado, sino va a mandar alv la request de datos
 app.use(cors());
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'production') {
     // queremos que use este middleware para determinar que queremos servir lo del build en la ruta
     // que le pasemos
     app.use(express.static(path.join(__dirname, 'client/build')));
