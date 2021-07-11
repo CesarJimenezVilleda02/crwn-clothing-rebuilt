@@ -64,7 +64,7 @@ export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
 //se crea un nuevo objeto
-const provider = new firebase.auth.GoogleAuthProvider();
+export const provider = new firebase.auth.GoogleAuthProvider();
 //estos parametros definen lo que pasa, queremos que siempre aga la popup cuando usemos el googleauth
 provider.setCustomParameters({ prompt: 'select_account' });
 
@@ -115,4 +115,25 @@ export const convertCollectionsSnapshotToMap = (collections) => {
         accumulator[collection.title.toLowerCase()] = collection;
         return accumulator;
     }, {});
+};
+
+// checar el auth
+export const getCurrentUsermINE = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+            // se elimina el oyente
+            unsubscribe();
+            // se resuelve regresando el auth
+            resolve(userAuth);
+        }, reject());
+    });
+};
+
+export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+            unsubscribe();
+            resolve(userAuth);
+        }, reject);
+    });
 };

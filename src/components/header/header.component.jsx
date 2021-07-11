@@ -17,27 +17,22 @@ import { connect } from 'react-redux';
 // styled components css in js
 import { HeaderContainer, LogoContainer, OptionsContainer, OptionDiv, OptionLink } from './header.styles.jsx';
 
-const Header = ({ currentUser, hidden }) => (
-    <HeaderContainer >
-        <LogoContainer  to='/'>
+// le metemos la accion
+import { signOutStart } from '../../redux/user/user.actions';
+
+const Header = ({ currentUser, hidden, signOutStart }) => (
+    <HeaderContainer>
+        <LogoContainer to='/'>
             <Logo className='logo' />
             {currentUser ? <h3>{'Welcome ' + currentUser.displayName}</h3> : <div></div>}
         </LogoContainer>
-        <OptionsContainer >
-            <OptionLink  to='/shop'>
-                SHOP
-            </OptionLink>
-            <OptionLink  to='/contact'>
-                CONTACT
-            </OptionLink>
+        <OptionsContainer>
+            <OptionLink to='/shop'>SHOP</OptionLink>
+            <OptionLink to='/contact'>CONTACT</OptionLink>
             {currentUser ? (
-                <OptionDiv  onClick={() => auth.signOut()}>
-                    SIGN OUT
-                </OptionDiv>
+                <OptionDiv onClick={signOutStart}>SIGN OUT</OptionDiv>
             ) : (
-                <OptionLink to='/signin'>
-                    SIGN IN
-                </OptionLink>
+                <OptionLink to='/signin'>SIGN IN</OptionLink>
             )}
             <CartIcon />
         </OptionsContainer>
@@ -48,16 +43,6 @@ const Header = ({ currentUser, hidden }) => (
     </HeaderContainer>
 );
 
-//SIN RESELECT
-// //este va a ser para meterle el state al componente
-// const mapStateToProps = (
-//     //destructurar nesteds, solo los rojos salen coo variables
-//     { user: { currentUser }, cart: { hidden } } //puede llamarse como sea pero este es el standard
-// ) => ({ currentUser, hidden });
-
-//CON RESELECT
-// const mapStateToProps = (state) => ({ currentUser: selectCurrentUser(state), hidden: selectCartHidden(state) });
-
 //con create structured selector
 const mapStateToProps = createStructuredSelector({
     //les pasa el estado actual de forma automatica
@@ -65,4 +50,8 @@ const mapStateToProps = createStructuredSelector({
     hidden: selectCartHidden,
 });
 
-export default connect(mapStateToProps)(Header);
+const mapDispatchToProps = (dispatch) => ({
+    signOutStart: () => dispatch(signOutStart()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

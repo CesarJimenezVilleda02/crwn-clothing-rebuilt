@@ -10,26 +10,23 @@ import logger from 'redux-logger';
 
 import rootReducer from './root-reducer';
 
-// espera un arreglo con todos los middlewares que podamos ocupar
-const middlewares = [logger, thunk];
+// shagas
+import createSagaMiddleware from '@redux-saga/core';
 
-//para crear la store se necesita un root reducer y una funcion con los middlewares
+// importamos la saga que queremos usar
+import { fetchCollectionsStart } from './shop/shop.sagas';
+import rootSaga from './root.saga';
+
+const sagaMiddleware = createSagaMiddleware(); //aqui van unas opciones qu eno vamos a ocupar
+
+// reemplazamos saga por thunk porque lo vamos a usar
+const middlewares = [logger, sagaMiddleware];
+
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
-// const stoer = createStore(rootReducer, applyMiddleware(logger)) //es lo mismo
 
-//esta es la versión persistente que va a tener nuestra app, este será el nuevo provider
 export const persistor = persistStore(store);
 
-// export default { store, persistore };
+// adentro del run pasamos las sags
+sagaMiddleware.run(rootSaga);
 
-// import { createStore, applyMiddleware } from 'redux';
-// import { persistStore } from 'redux-persist';
-// import logger from 'redux-logger';
-
-// import rootReducer from './root-reducer';
-
-// const middlewares = [logger];
-
-// export const store = createStore(rootReducer, applyMiddleware(...middlewares));
-
-// export const persistor = persistStore(store);
+// lo que hacemos con sagss es ponerlas en los mismos folders que sus concearns

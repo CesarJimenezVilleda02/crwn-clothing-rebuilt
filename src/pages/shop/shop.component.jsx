@@ -6,25 +6,16 @@ import { connect } from 'react-redux';
 import CollectionPage from '../collection/collection.container';
 import './shop.styles.scss';
 
-// import WithSpinner from '../../components/with-spinner/with-spinner.component';
-
-// import { firestore, convertCollectionsSnapshotToMap } from '../../firebase/firebase.utils';
-
-// vamos a usar la función que hicimos
-import { fetchCollectionStartAsync } from '../../redux/shop/shop.actions';
-// import { selectIsCollectionfetching, selectIsCollectionsLoaded } from '../../redux/shop/shop.selectors';
-// import { createStructuredSelector } from 'reselect';
-
-// no hay necesidad de pasarles el state de las colecciones porque ya lo sacan ellas mismas
-// const CollectionOverviewContainer = WithSpinner(CollectionOverview);
-// const CollectionpageWithSpinner = WithSpinner(CollectionPage);
+// cambiamos esto por la accion que manda el typo del payload al que escuchamos
+// import { fetchCollectionStartAsync } from '../../redux/shop/shop.actions';
+import { fetchCollectionsStart } from '../../redux/shop/shop.actions';
 
 class ShopPage extends React.Component {
     unsubscribeFromSnapshot = null;
 
     componentDidMount() {
-        const { fetchCollectionStartAsync } = this.props;
-        fetchCollectionStartAsync();
+        const { fetchCollectionsStart } = this.props;
+        fetchCollectionsStart();
     }
 
     render() {
@@ -52,7 +43,7 @@ class ShopPage extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchCollectionStartAsync: () => dispatch(fetchCollectionStartAsync()),
+    fetchCollectionsStart: () => dispatch(fetchCollectionsStart()),
 });
 
 export default connect(null, mapDispatchToProps)(ShopPage);

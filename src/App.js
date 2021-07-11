@@ -20,60 +20,13 @@ import { connect } from 'react-redux';
 //importamos la accion que nos va a ayudar a cambiar el state
 import { setCurrentUser } from './redux/user/user.actions';
 
-// con este los vamos a mandar al firebase
-import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
-import { getByTitle } from '@testing-library/react';
+// para el persist
+import { checkUserSession } from './redux/user/user.actions';
 
 class App extends React.Component {
-    // constructor() {
-    //     super();
-    //     this.state = {
-    //         currentUser: 'null',
-    //     };
-    // }
-    //ya no necesitamos este state
-
-    unsubscribeFromAuth = null;
     componentDidMount() {
-        const { setCurrentUser, collections } = this.props;
-
-        this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-            if (userAuth) {
-                const userRef = await createUserProfileDocument(userAuth);
-                userRef.onSnapshot((snapShot) => {
-                    // console.log(snapShot.data()); //asi obtenemos un objeto con los datos de usuario
-                    // this.setState(
-                    //     {
-                    //         currentUser: {
-                    //             id: snapShot.id,
-                    //             ...snapShot.data(),
-                    //         },
-                    //     }
-                    // ); //ya no necesitamos esto, lo reemplazamos con la accion que tenemos
-                    setCurrentUser({
-                        id: snapShot.id,
-                        ...snapShot.data(),
-                    });
-                    //asi ya le estamos metiendo el usuario que recibimos del snapshot a la creadora de acciones
-                });
-                //si esta vacio y ya hicimso el sign out
-            }
-            setCurrentUser(userAuth);
-
-            //FIREBASE PARTE 2 -- LO QUITAMOS LUEGO DE LLAMARLO PORQUE SOLO SE OCUPA UNA VEZ
-            // no queremos que pasen cosas como el id meado que hicimos o el routename
-            // addCollectionAndDocuments(
-            //     'collections',
-            //     collections.map(({ title, items }) => ({ title, items }))
-            // );
-            // console.log('puto');
-        });
-    }
-
-    componentWillUnmount() {
-        //cierra la mensajeria
-        //al igualarlo nos da una funcion que va a cerrar la operacion ,es como un ()(), el segundo lo cierrra
-        this.unsubscribeFromAuth();
+        const { checkUserSession } = this.props;
+        checkUserSession();
     }
 
     render() {
@@ -111,20 +64,10 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
     currentUser: selectCurrentUser,
-    collections: selectCollectionsForPreview,
 });
 
-//dispatch es la forma de saber que lo que le pases va a ir a los reducers
 const mapDispatchToProps = (dispatch) => ({
-    //al set current user le va allegar el usuario, el cual va a pasar al dispatch junto con el resultado
-    //de llamarlo, la funcion crea el payload que entrerá
-    setCurrentUser: (user) => dispatch(setCurrentUser(user)),
-    //le pasamos la funcion que hace la accion con el usuario que irá de payload para que el objeto formado llegue a
-    //los reducers
+    checkUserSession: () => dispatch(checkUserSession()),
 });
 
-//ya no necesitamos el state del usuario en app, tambien tenemos acceso al current user
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-//ya no es necesario modificar el header para que en el sign out también se cambie el estado, porque lo que hace es
-//modificar el objeto auth y nosotros escuchamos los cambios en el objeto auth en app, no en header
