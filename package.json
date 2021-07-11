@@ -1,9 +1,9 @@
 {
-    "name": "crown-clothing-reworked",
+    "name": "crwn-clothing-server",
     "version": "1.0.0",
     "engines": {
-        "node": "v14.6.0",
-        "npm": "6.14.6"
+        "node": "10.15.3",
+        "npm": "6.4.1"
     },
     "scripts": {
         "client": "cd client && yarn start",
@@ -15,7 +15,6 @@
     },
     "dependencies": {
         "body-parser": "^1.18.3",
-        "compression": "1.7.4",
         "cors": "2.8.5",
         "dotenv": "7.0.0",
         "express": "^4.16.4",
