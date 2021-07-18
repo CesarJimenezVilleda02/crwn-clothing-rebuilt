@@ -17,7 +17,7 @@ const Directory = ({ sections }) => (
     //sus propiedades
     <div className='directory-menu'>
         {sections.map(({ id, ...otherProps }) => {
-            console.log(id);
+            console.log(otherProps);
             //esto sería el equivalente a pasar todo como en el anterior, pasan con su mismo nombre
             return <MenuItem key={id} id={id} {...otherProps} />;
         })}

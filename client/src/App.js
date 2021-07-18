@@ -1,4 +1,4 @@
-import './App.css';
+// import './App.css';
 import React, { useEffect } from 'react';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component.jsx';
@@ -23,6 +23,9 @@ import { setCurrentUser } from './redux/user/user.actions';
 // para el persist
 import { checkUserSession } from './redux/user/user.actions';
 
+// importamos el estilo blobal
+import { GlobalStyle } from './GlobalStyles.styles.js';
+
 const App = ({ currentUser, checkUserSession }) => {
     useEffect(() => {
         checkUserSession();
@@ -31,7 +34,9 @@ const App = ({ currentUser, checkUserSession }) => {
     // como es una funcion propiedad la podemos pasar porque no va a cambiar la funcion
 
     return (
-        <div className='App'>
+        <div>
+            {/* con ponerlo una sola vez hasta arriba de todo la aplicación ya sirve */}
+            <GlobalStyle />
             {/* <Header currentUser={this.state.currentUser} /> se lo quito porque ya está conectado al store */}
             <Header />
             <Switch>
