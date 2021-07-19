@@ -1,30 +1,36 @@
 // import './App.css';
-import React, { useEffect } from 'react';
-import HomePage from './pages/homepage/homepage.component';
-import ShopPage from './pages/shop/shop.component.jsx';
+import React, { useEffect, lazy, Suspense } from 'react';
+// import HomePage from './pages/homepage/homepage.component';
+// import ShopPage from './pages/shop/shop.component.jsx';
 import Header from './components/header/header.component.jsx';
-import SignInAndSignOut from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx';
-import CheckoutPage from './pages/checkout/checkout.component.jsx';
-
-// la función que creamos
-import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
-//selectors
+// import SignInAndSignOut from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx';
+// import CheckoutPage from './pages/checkout/checkout.component.jsx';
 import { selectCurrentUser } from './redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
-
-//vamos a hacer que se redireccione cuando ya está signed in el user
 import { Route, Switch, Redirect } from 'react-router-dom';
-
-//conectar con redux y el store
 import { connect } from 'react-redux';
-//importamos la accion que nos va a ayudar a cambiar el state
-import { setCurrentUser } from './redux/user/user.actions';
 
 // para el persist
 import { checkUserSession } from './redux/user/user.actions';
 
 // importamos el estilo blobal
 import { GlobalStyle } from './GlobalStyles.styles.js';
+
+// impprtamos el componente para cuando va a estar suspendido
+import Spinner from './components/spinner/spinner.component';
+
+import ErrorBoundary from './components/error-boundary/error-boundary.component';
+
+// cuando la aplicación deba ser rendereada se llamará esta función
+// lazy es una funcon que recibe una funcion que debe retornar el import
+const HomePage = lazy(() => import('./pages/homepage/homepage.component'));
+// el problema es que es asincronico y puede haber un momento en el que el usuario no vea nada,
+//para esto vamos a usar suspense, este es un nuevo componente que envuelve las partes de una
+// aplicacion que pueden estar rendereando de forma asincrónica
+const ShopPage = lazy(() => import('./pages/shop/shop.component.jsx'));
+// const Header = lazy(() => import('./components/header/header.component.jsx'));
+const SignInAndSignOut = lazy(() => import('./pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx'));
+const CheckoutPage = lazy(() => import('./pages/checkout/checkout.component.jsx'));
 
 const App = ({ currentUser, checkUserSession }) => {
     useEffect(() => {
@@ -35,23 +41,29 @@ const App = ({ currentUser, checkUserSession }) => {
 
     return (
         <div>
-            {/* con ponerlo una sola vez hasta arriba de todo la aplicación ya sirve */}
             <GlobalStyle />
-            {/* <Header currentUser={this.state.currentUser} /> se lo quito porque ya está conectado al store */}
             <Header />
             <Switch>
-                <Route exact path='/' component={HomePage} />
-                {/* se lo quitamos porque el shop va a estar variando, cuando varian debemos removerlo */}
-                <Route path='/shop' component={ShopPage} />
-                {/* con esta determinas qué componente renderear */}
-                <Route
-                    exact
-                    path='/signin'
-                    // el render nos deja definir de forma dinámica qué queremos que se renderee y en su ugar va una
-                    //funcion que retornará el componente a renderear
-                    render={() => (currentUser ? <Redirect to='/' /> : <SignInAndSignOut />)}
-                />
-                <Route exact path='/checkout' component={CheckoutPage} />
+                {/* el suspense va a tener una propiedad fallback con HTML de lo que va a renderear mientras espera
+                envolviendo todos con el suspense ya hacemos que el loading afecte a todos
+                */}
+                {/* si algo de lo de adentro se rompe, el error boundary con el que lo envolvimos
+                va a usar el componente que le creamos */}
+                <ErrorBoundary>
+                    <Suspense fallback={<Spinner />}>
+                        <Route exact path='/' component={HomePage} />
+
+                        <Route path='/shop' component={ShopPage} />
+
+                        <Route
+                            exact
+                            path='/signin'
+                            render={() => (currentUser ? <Redirect to='/' /> : <SignInAndSignOut />)}
+                        />
+
+                        <Route exact path='/checkout' component={CheckoutPage} />
+                    </Suspense>
+                </ErrorBoundary>
             </Switch>
         </div>
     );

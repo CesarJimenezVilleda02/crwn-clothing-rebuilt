@@ -3,9 +3,10 @@ import Directory from '../../components/directory/directory.component';
 
 // import './homepage.styles.scss';
 
-import {HomepageContainer} from "./homepage.styles";
+import { HomepageContainer } from './homepage.styles';
 
 const HomePage = () => {
+    // throw Error;
     return (
         // antes esto era un div
         <HomepageContainer className='homepage'>
